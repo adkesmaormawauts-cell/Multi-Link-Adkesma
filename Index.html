@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEPT. ADKESMA - Official Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --navy: #1a3a8a;
+            --gold: #f1c40f;
+            --white: #ffffff;
+            --light-bg: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body { background-color: var(--white); overflow-x: hidden; }
+
+        /* --- NAVIGATION & SIDEBAR --- */
+        header {
+            background-color: var(--navy);
+            color: var(--gold);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .hamburger { font-size: 24px; cursor: pointer; margin-right: 15px; }
+        .dept-title { font-size: 15px; font-weight: bold; text-transform: uppercase; }
+
+        .sidebar {
+            height: 100%; width: 0; position: fixed; z-index: 2000;
+            top: 0; left: 0; background-color: var(--navy);
+            overflow-x: hidden; transition: 0.4s; padding-top: 60px;
+            border-right: 4px solid var(--gold);
+        }
+
+        .sidebar h2 { color: var(--gold); padding: 0 30px; margin-bottom: 20px; font-style: italic; }
+        .sidebar a { padding: 15px 30px; text-decoration: none; color: white; display: block; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 30px; color: white; cursor: pointer; }
+
+        .overlay { display: none; position: fixed; width: 100%; height: 100%; top: 0; left: 0; background: rgba(0,0,0,0.6); z-index: 1500; }
+
+        /* --- HERO & JADWAL --- */
+        .hero { padding: 40px 20px; text-align: center; }
+        .hero h1 { color: var(--navy); font-size: 30px; }
+        .hero h2 { color: var(--gold); font-size: 34px; margin-bottom: 25px; }
+        .schedule-card {
+            border: 2.5px solid var(--gold); border-radius: 20px;
+            padding: 20px; display: inline-block; min-width: 280px;
+        }
+
+        /* --- SERVICES --- */
+        .services { padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .btn-portal {
+            width: 100%; max-width: 400px; padding: 20px; border-radius: 15px;
+            text-decoration: none; display: flex; align-items: center; font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .myut { background: var(--navy); color: white; }
+        .tuton { background: var(--gold); color: var(--navy); }
+        .pustaka { background: white; color: var(--navy); border: 1px solid #ddd; }
+
+        /* --- ABOUT SECTION --- */
+        .about { padding: 40px 20px; }
+        .tag-about { border-left: 6px solid var(--gold); padding-left: 15px; font-size: 24px; color: var(--navy); font-weight: bold; margin-bottom: 20px; }
+        .stat-row { display: flex; gap: 10px; margin: 20px 0; }
+        .stat-box { flex: 1; padding: 15px; border-radius: 12px; text-align: center; color: white; }
+
+        /* --- STRUKTUR ORGANISASI --- */
+        .structure { padding: 40px 20px; text-align: center; background: #fdfdfd; }
+        .grid-members { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px; }
+        .card-member { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-bottom: 4px solid var(--gold); cursor: pointer; }
+        .photo-box { width: 100%; aspect-ratio: 1/1; background: #f0f0f0; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+        .role-tag { background: var(--navy); color: white; font-size: 9px; padding: 4px 8px; border-radius: 5px; font-weight: bold; }
+.photo-box {
+    width: 100%;
+    aspect-ratio: 6/8;
+  /* Menjaga kotak tetap kotak sempurna */
+    background: #f0f0f0;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden; /* Supaya foto tidak keluar dari sudut melengkung */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  /* Foto otomatis dipotong rapi tanpa gepeng */
+}
+  .modal-photo {
+    width: 100%;
+    aspect-ratio: 6/8;
+    background: #eee;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    overflow: hidden; 
+    border: 4px solid #f1c40f; 
+    /* Garis kuning sesuai gambar pop-up */
+}
+
+.modal-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+        /* --- MODAL POP-UP (Gambar 8) --- */
+        .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; padding: 20px; }
+        .modal-content {
+            background: white; width: 100%; max-width: 350px; border-radius: 25px;
+            padding: 25px; position: relative; border-top: 10px solid var(--navy);
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #aaa; cursor: pointer; }
+        .modal-photo { width: 100%; aspect-ratio: 6/8; border: 4px solid var(--gold); border-radius: 15px; margin-bottom: 20px; background: #eee; }
+        .modal-name { color: var(--navy); font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .modal-role { background: var(--navy); color: white; display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 11px; margin-bottom: 15px; font-weight: bold; }
+        .modal-meta { font-size: 12px; color: #888; margin-bottom: 15px; }
+        .modal-bio h4 { font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: var(--navy); }
+        .modal-bio p { font-size: 13px; color: #555; font-style: italic; line-height: 1.4; }
+
+        /* --- FOOTER --- */
+        footer { background: var(--navy); color: white; padding: 40px 20px; margin-top: 40px; }
+        .footer-title { color: var(--gold); margin-bottom: 15px; }
+        .copy { text-align: center; font-size: 10px; margin-top: 30px; opacity: 0.6; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        @media (min-width: 768px) { .grid-members { grid-template-columns: repeat(4, 1fr); } .services { flex-direction: row; justify-content: center; } }
+    </style>
+</head>
+<body>
+
+    <div id="mySidebar" class="sidebar">
+        <span class="close-btn" onclick="closeNav()">&times;</span>
+        <h2>MENU UTAMA</h2>
+        <a href="#home">BERANDA</a>
+        <a href="#about">TENTANG KAMI</a>
+        <a href="#structure">STRUKTUR ORGANISASI</a>
+        <a href="#" style="color: var(--gold); margin-top: 20px;">PORTAL MYUT</a>
+    </div>
+    <div id="overlay" class="overlay" onclick="closeNav()"></div>
+
+    <header>
+        <div class="hamburger" onclick="openNav()"><i class="fas fa-bars"></i></div>
+      <img src="https://i.ibb.co.com/BVksmLWH/logo.png" width="30%" height="30%">
+      <div class="dept-title">Multi Link Adkesma</div>
+    </header>
+
+    <div id="home" class="hero">
+        <h1>ADVOKASI &</h1>
+        <h2>KESEJAHTERAAN MAHASISWA</h2>
+        <div class="schedule-card">
+            <p style="font-weight: bold; font-size: 14px;">JADWAL OPERASIONAL</p>
+            <p style="margin: 10px 0;">SENIN - JUMAT</p>
+            <h3 style="font-size: 24px;">08:00 - 16:00</h3>
+            <p style="color: red; margin-top: 15px;">SABTU - MINGGU</p>
+            <p style="font-style: italic; font-weight: bold; color: #c0392b;">Pemeliharaan Server</p>
+        </div>
+    </div>
+
+    <section id="services" class="services">
+        <a href="https://myut.ut.ac.id" class="btn-portal myut"><i class="fas fa-laptop-code" style="margin-right: 15px; font-size: 20px;"></i>MY UT</a>
+        <a href="https://elearning.ut.ac.id/apput/sso/" class="btn-portal tuton"><i class="fas fa-laptop-code" style="margin-right: 15px; font-size: 20px;"></i> E-LEARNING / TUTON</a>
+        <a href="https://pustaka.ut.ac.id/reader/index.php" class="btn-portal pustaka"><i class="fas fa-university" style="margin-right: 15px; font-size: 20px;"></i> PUSTAKA VIRTUAL</a>
+    </section>
+
+    <section id="about" class="about">
+        <div class="tag-about">TENTANG KAMI</div>
+        <p style="font-style: italic; color: #555; line-height: 1.6;">"Departemen Advokasi dan Kesejahteraan Mahasiswa (ADKESMA) merupakan departemen yang bertanggung jawab terhadap kesejahteraan Mahasiswa UT Serang dan yang menjadi jembatan aspirasi dari mahasiswa kepada pihak pengelola kampus."</p>
+        <div class="stat-row">
+            <div class="stat-box" style="background: var(--navy);"><h3>0</h3><small>ADUAN SELESAI</small></div>
+            <div class="stat-box" style="background: var(--gold); color: var(--navy);"><h3>24/7</h3><small>SIAP LAPOR</small></div>
+        </div>
+    </section>
+
+    <section id="structure" class="structure">
+        <h2 style="color: var(--navy); letter-spacing: 3px;">STRUKTUR</h2>
+        <h2 style="color: var(--gold); letter-spacing: 2px;">ORGANISASI</h2>
+        
+        <div class="grid-members">
+            <div class="card-member" onclick="showProfile(this,'SYIFA NURUL RAMADHANTI', 'Ketua Departemen', 'PGSD • SEMESTER 6', 'Berperan sebagai pemimpin strategis dan penanggung jawab utama arah gerak advokasi. Bertugas menjalin komunikasi birokrasi dengan pihak UPBJJ-UT Serang, mengambil keputusan krusial, serta memastikan seluruh kebijakan organisasi berorientasi pada perlindungan hak dan kesejahteraan mahasiswa.')">
+                <div class="photo-box"><img src="https://i.ibb.co.com/8LMyqZz7/20260129-011238.jpg" alt="Syifa Nurul Ramadhanti" class="member-photo"></div>
+                <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">SYIFA NURUL RAMANDHANTI</p>
+                <span class="role-tag">Ketua Departemen</span>
+            </div>
+            <div class="card-member" onclick="showProfile(this,'EKA SAPUTRA', 'Wakil Ketua Departemen', 'PARIWISATA • SEMESTER 4', 'Bertanggung jawab atas pengawasan internal dan efektivitas kerja departemen. Wakil Ketua berperan sebagai mitra strategis Ketua dalam mengevaluasi program kerja, menjaga harmoni tim, serta memastikan teknis pelaksanaan advokasi di lapangan berjalan sesuai rencana.')">
+                <div class="photo-box"><img src="https://i.ibb.co.com/qMN4rV2z/20260129-011123.jpg" alt="Eka Saputra" class="member-photo"></div>
+                <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">EKA SAPUTRA</p>
+                <span class="role-tag">Wakil Ketua Departemen</span>
+            </div>
+            <div class="card-member" onclick="showProfile(this,'FEBRIANI MUSTIKA SARI', 'Sekretaris Departemen', 'ILMU ADMINISTRASI NEGARA • SEMESTER 1', 'Pusat kendali administrasi dan dokumentasi. Bertanggung jawab atas manajemen persuratan, pengarsipan data aspirasi mahasiswa, serta penyusunan notulensi audiensi guna memastikan setiap langkah perjuangan advokasi terekam secara sistematis dan legal.')">
+                <div class="photo-box"><img src="https://i.ibb.co.com/WpdhnY7s/20260129-011210.jpg" alt="Febriani Mustika Sari" class="member-photo"></div>
+                <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">FEBRIANI MUSTIKA SARI</p>
+                <span class="role-tag">Sekretaris Departemen</span>
+            </div>
+            <div class="card-member" onclick="showProfile(this,'EKWALA NUR CAHYANI', 'Bendahara Departemen', 'ILMU HUKUM • SEMESTER 6', 'Manajer finansial yang bertanggung jawab atas transparansi dan akuntabilitas anggaran. Tugasnya meliputi penyusunan rencana anggaran kegiatan, pengelolaan arus kas, serta memastikan ketersediaan logistik finansial untuk mendukung setiap program kesejahteraan mahasiswa.')">
+                <div class="photo-box"><img src="https://i.ibb.co.com/QFF5sMft/20260129-011312.jpg" alt="Ekwala Nur Cahyani" class="member-photo"></div>
+                <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">EKWALA NUR CAHYANI</p>
+                <span class="role-tag">Bendahara Departemen</span>
+            </div>
+          <div class="card-member" onclick="showProfile(this,'MUHAMAD RIFKI', 'Anggota Departemen', 'MANAJEMEN • SEMESTER 7','Garda terdepan yang berinteraksi langsung dengan mahasiswa. Bertugas menjaring keluhan secara langsung, melakukan riset isu-isu kampus, serta memberikan pendampingan teknis bagi mahasiswa yang membutuhkan bantuan terkait kendala akademik maupun kesejahteraan.')">
+            <div class="photo-box"><img src="https://i.ibb.co.com/vC963sLc/20260129-011340.jpg" alt="Muhamad Rifki" class="member-photo"></div>
+            <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">MUHAMAD RIFKI</p>
+            <span class="role-tag">Anggota Departemen</span>
+          </div>
+            <div class="card-member" onclick="showProfile(this,'ANISA PUTRI ASIH', 'Anggota Departemen', 'SASTRA INGGRIS • SEMESTER 4','Garda terdepan yang berinteraksi langsung dengan mahasiswa. Bertugas menjaring keluhan secara langsung, melakukan riset isu-isu kampus, serta memberikan pendampingan teknis bagi mahasiswa yang membutuhkan bantuan terkait kendala akademik maupun kesejahteraan.')">
+            <div class="photo-box"><img src="https://i.ibb.co.com/1GGnTZG8/20260129-011151.jpg" alt="Anisa Putri Asih" class="member-photo"></div>
+            <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">ANISA PUTRI ASIH</p>
+            <span class="role-tag">Anggota Departemen</span>
+          </div>
+            <div class="card-member" onclick="showProfile(this,'RANI MAHALINI AGUSTINI WIJAYA', 'Anggota Departemen', 'PGSD • SEMESTER 4','Garda terdepan yang berinteraksi langsung dengan mahasiswa. Bertugas menjaring keluhan secara langsung, melakukan riset isu-isu kampus, serta memberikan pendampingan teknis bagi mahasiswa yang membutuhkan bantuan terkait kendala akademik maupun kesejahteraan.')">
+            <div class="photo-box"><img src="https://i.ibb.co.com/fGCYS5BZ/Rani.png" alt="Rani Mahalini Agustini Wijaya" class="member-photo"></div>
+            <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">RANI MAHALANI AGUSTINI WIJAYA</p>
+            <span class="role-tag">Anggota Departemen</span>
+          </div>
+            <div class="card-member" onclick="showProfile(this,'LINTANG NAZRIL MAULANA', 'Anggota Departemen', 'MANAJEMEN • SEMESTER 1','Bertanggung jawab atas digitalisasi layanan departemen melalui pengembangan dan pengelolaan Multi Link Adkesma. Peran utamanya adalah mengintegrasikan sistem pengaduan dan pusat informasi dalam satu platform digital, guna mempermudah aksesibilitas mahasiswa UT Serang dalam mendapatkan bantuan secara cepat dan efisien.')">
+            <div class="photo-box"><img src="https://i.ibb.co.com/ZRJWzDQ5/20260129-010923.jpg" alt="Lintang Nazril Maulana" class="member-photo"></div>
+            <p style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">LINTANG NAZRIL MAULANA</p>
+            <span class="role-tag">Anggota Departemen</span>
+          </div>
+        </div>
+    </section>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-photo"></div>
+            <h3 id="m-name" class="modal-name">NAMA ANGGOTA</h3>
+            <div id="m-role" class="modal-role">JABATAN</div>
+            <p id="m-meta" class="modal-meta">JURUSAN • SEMESTER</p>
+            <div class="modal-bio">
+                <h4>BIOGRAFI</h4>
+                <p id="m-bio">Deskripsi biografi anggota organisasi.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <h3 class="footer-title">DEPARTEMEN ADKESMA</h3>
+        <p style="font-size: 14px; margin-bottom: 20px;">MELAYANI DENGAN INTEGRITAS, BERJUANG UNTUK HAK MAHASISWA.</p>
+        <div style="font-size: 13px; opacity: 0.8;">
+            <p><strong>SEKRETARIAT</strong></p>
+            <p>-</p>
+            <p>adkesma.ormawauts@gmail.com</p>
+        </div>
+        <div class="copy">© 2026 ADKESMA OFFICIAL - ORMAWA "IKM" UT SERANG</div>
+    </footer>
+
+    <script>
+        // Sidebar Logic
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "280px";
+            document.getElementById("overlay").style.display = "block";
+        }
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        // Modal Logic (Gambar 8)
+        function showProfile(name, role, meta, bio) {
+            document.getElementById("m-name").innerText = name;
+            document.getElementById("m-role").innerText = role;
+            document.getElementById("m-meta").innerText = meta;
+            document.getElementById("m-bio").innerText = bio;
+            document.getElementById("profileModal").style.display = "flex";
+        }
+        function closeModal() {
+            document.getElementById("profileModal").style.display = "none";
+        }
+
+        // Close modal if click outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("profileModal")) {
+                closeModal();
+            }
+        }
+    </script>
+  <script>
+function showProfile(element, name, role, meta, bio) {
+    // Mengambil src gambar dari kartu yang diklik
+    const imageSrc = element.querySelector('.member-photo').src;
+    
+    // Menampilkan gambar tersebut ke dalam kotak foto di pop-up
+    const modalPhoto = document.querySelector('.modal-photo');
+    modalPhoto.innerHTML = `<img src="${imageSrc}">`;
+    
+    // Mengisi data teks pop-up
+    document.getElementById("m-name").innerText = name;
+    document.getElementById("m-role").innerText = role;
+    document.getElementById("m-meta").innerText = meta;
+    document.getElementById("m-bio").innerText = bio;
+    
+    // Munculkan modalnya
+    document.getElementById("profileModal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("profileModal").style.display = "none";
+}
+</script>
+</body>
+</html>
